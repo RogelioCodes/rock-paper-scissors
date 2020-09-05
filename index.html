@@ -6,96 +6,104 @@
     <title>Document</title>
   </head>
   <body>
-    <script>
-      //Global Variables
-
-      let playerScore = 0;
-      let computerScore = 0;
-
-      /*This function generates a random number between 0 and two
-      and uses that number to return either rock, paper or scissors */
-      let computerPlay = () => {
-        let choice = ["Rock", "Paper", "Scissors"];
-        return choice[Math.floor(Math.random() * 3)];
-      };
-
-      // Capitalizes the first letter of string
-      function capitalize(playerSelection) {
-        return (
-          playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1)
-        );
-      }
-      //Prompts user to enter rock paper or scissors and then returns that string with the first letter capitalized
-      let playerPlay = () => {
-        let playerSelection = prompt("Please enter rock, paper, or scissors");
-        playerSelection = capitalize(playerSelection);
-        while (
-          //Checks if user input is valid
-          playerSelection != "Rock" &&
-          playerSelection != "Paper" &&
-          playerSelection != "Scissors"
-        ) {
-          playerSelection = prompt(
-            "Please choose either rock, paper or scissors."
-          );
-          playerSelection = capitalize(playerSelection);
-        }
-
-        return playerSelection;
-      };
-
-      //plays a round and returns the winner
-      function playRound(playerSelection, computerSelection) {
-        console.log(
-          "computerSelection: " +
-            computerSelection +
-            " playerSelection: " +
-            playerSelection
-        );
-
-        if (playerSelection === computerSelection) {
-          return "Draw";
-        } else if (
-          (playerSelection === "Rock" && computerSelection == "Scissors") ||
-          (playerSelection === "Paper" && computerSelection == "Rock") ||
-          (playerSelection === "Scissors" && computerSelection === "Paper")
-        ) {
-          return playerScore++;
-        } else if (
-          (playerSelection === "Scissors" && computerSelection == "Rock") ||
-          (playerSelection === "Rock" && computerSelection == "Paper") ||
-          (playerSelection === "Paper" && computerSelection === "Scissors")
-        ) {
-          return computerScore++;
-        }
-      }
-      //calls playRound and calculates the final score and winner of the game
-      function game() {
-        let computerSelection = computerPlay();
-        let playerSelection = playerPlay();
-
-        playRound(playerSelection, computerSelection);
-
-        if (playerScore === computerScore) {
-          return "Tie game!";
-        } else if (playerScore > computerScore) {
-          return "Player wins the game!";
-        } else if (computerScore > playerScore) {
-          return "Computer wins the game!";
-        }
-      }
-      function displayScore() {
-        console.log(
-          "Player score: " + playerScore + " Computer score: " + computerScore
-        );
-      }
-
-      game();
-      game();
-      game();
-      game();
-      console.log(game());
-      displayScore();
-    </script>
+    <p>
+      Please choose rock, paper, or scissors. The first to five points wins!
+    </p>
+    <button id="#rock" onclick="playRound(`Rock`, computerPlay())">ROCK</button>
+    <button id="#paper" onclick="playRound(`Paper`, computerPlay())">
+      PAPER
+    </button>
+    <button id="#scissors" onclick="playRound(`Scissors`, computerPlay())">
+      SCISSORS
+    </button>
+    <button id="#reset" onclick="resetGame()">RESET</button>
   </body>
+  <script>
+    /*This function generates a random number between 0 and 2
+      and uses that number to return either rock, paper or scissors */
+    let computerPlay = () => {
+      let choice = ["Rock", "Paper", "Scissors"];
+      return choice[Math.floor(Math.random() * 3)];
+    };
+    //Global Variables
+    let playerScore = 0;
+    let computerScore = 0;
+    let drawScore = 0;
+    let playerSelection = "";
+    let roundWinner = "";
+    let computerSelection = computerPlay();
+
+    //Creates
+    var new_span = document.createElement("div");
+    var score_span = document.createElement("div");
+    var choice_span = document.createElement("div");
+
+    //plays a round and returns the winner
+    function playRound(playerSelection, computerSelection) {
+      choice_span.className = "result";
+      choice_span.innerText =
+        "computerSelection: " +
+        computerSelection +
+        " playerSelection: " +
+        playerSelection;
+      document.body.appendChild(choice_span);
+
+      if (playerSelection === computerSelection) {
+        drawScore++;
+        roundWinner = "Nobody";
+        updateScore();
+      } else if (
+        (playerSelection === "Rock" && computerSelection == "Scissors") ||
+        (playerSelection === "Paper" && computerSelection == "Rock") ||
+        (playerSelection === "Scissors" && computerSelection === "Paper")
+      ) {
+        playerScore++;
+        roundWinner = "Player";
+        updateScore();
+      } else if (
+        (playerSelection === "Scissors" && computerSelection == "Rock") ||
+        (playerSelection === "Rock" && computerSelection == "Paper") ||
+        (playerSelection === "Paper" && computerSelection === "Scissors")
+      ) {
+        computerScore++;
+        roundWinner = "Computer";
+        updateScore();
+      }
+    }
+    function updateScore() {
+      score_span.innerText =
+        "playerScore: " + playerScore + " computerScore: " + computerScore;
+      document.body.appendChild(score_span);
+      if (roundWinner === "Nobody") {
+        new_span.innerText = "Tie round!";
+        if (playerScore === computerScore && playerScore == 5) {
+          new_span.innerText = "Tie game!";
+        }
+        document.body.appendChild(new_span);
+      } else if (roundWinner === "Player") {
+        new_span.innerText = "Player wins the round!";
+        if (playerScore >= 5) {
+          new_span.innerText = "Player wins the game!";
+        }
+        document.body.appendChild(new_span);
+      } else if (roundWinner === "Computer") {
+        new_span.innerText = "Computer wins the  round!";
+        if (computerScore >= 5) {
+          new_span.innerText = "Computer wins the game!";
+        }
+        document.body.appendChild(new_span);
+      }
+    }
+
+    function resetGame() {
+      computerScore = 0;
+      playerScore = 0;
+      computerSelection = "";
+      playerSelection = "";
+      new_span.innerText = "";
+      roundWinner = "";
+      document.body.appendChild(new_span);
+      updateScore();
+    }
+  </script>
 </html>
